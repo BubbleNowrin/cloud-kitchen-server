@@ -20,6 +20,20 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
 
     try {
+        const foodCollection = client.db('foodaholic').collection('foodData');
+        app.get('/foods', async (req, res) => {
+            const query = {};
+            const cursor = foodCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        app.get('/food', async (req, res) => {
+            const query = {};
+            const cursor = foodCollection.find(query);
+            const food = await cursor.limit(3).toArray();
+            res.send(food);
+        })
 
     }
     finally {
