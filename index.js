@@ -40,7 +40,7 @@ async function run() {
 
         app.get('/food', async (req, res) => {
             const query = {};
-            const cursor = foodCollection.find(query);
+            const cursor = foodCollection.find(query).sort({ date: -1 });
             const food = await cursor.limit(3).toArray();
             res.send(food);
         })
@@ -79,6 +79,12 @@ async function run() {
         app.post('/reviews/:id', async (req, res) => {
             const review = req.body;
             const result = await reviewsCollection.insertOne(review);
+            res.send(result);
+        })
+
+        app.post('/foods', async (req, res) => {
+            const newService = req.body;
+            const result = await foodCollection.insertOne(newService);
             res.send(result);
         })
 
