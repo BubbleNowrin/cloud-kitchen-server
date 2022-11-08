@@ -21,6 +21,7 @@ async function run() {
 
     try {
         const foodCollection = client.db('foodaholic').collection('foodData');
+        const reviewsCollection = client.db('foodaholic').collection('reviews');
 
         app.get('/foods', async (req, res) => {
             const query = {};
@@ -42,6 +43,12 @@ async function run() {
             const cursor = foodCollection.find(query);
             const food = await cursor.limit(3).toArray();
             res.send(food);
+        })
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewsCollection.find(query);
+            const reviews = await cursor.toArray();
+            res.send(reviews);
         })
 
     }
