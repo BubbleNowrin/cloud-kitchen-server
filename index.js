@@ -44,8 +44,9 @@ async function run() {
             const food = await cursor.limit(3).toArray();
             res.send(food);
         })
-        app.get('/reviews', async (req, res) => {
-            const query = {};
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { serviceId: id };
             const cursor = reviewsCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
