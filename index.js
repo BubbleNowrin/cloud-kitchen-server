@@ -44,12 +44,25 @@ async function run() {
             const food = await cursor.limit(3).toArray();
             res.send(food);
         })
+
+        app.get('/reviews', async (req, res) => {
+            const query = {};
+            const cursor = reviewsCollection.find(query);
+            const result = await cursor.toArray();
+            res.send(result);
+        })
         app.get('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { serviceId: id };
             const cursor = reviewsCollection.find(query);
             const reviews = await cursor.toArray();
             res.send(reviews);
+        })
+
+        app.post('/reviews/:id', async (req, res) => {
+            const review = req.body;
+            const result = await reviewsCollection.insertOne(review);
+            res.send(result);
         })
 
     }
