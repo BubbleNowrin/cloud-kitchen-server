@@ -39,12 +39,14 @@ async function run() {
         const foodCollection = client.db('foodaholic').collection('foodData');
         const reviewsCollection = client.db('foodaholic').collection('reviews');
 
+        //jwt token
         app.post('/jwt', (req, res) => {
             const user = req.body;
             const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1h' })
             res.send({ token });
         })
 
+        //get all services from database
         app.get('/foods', async (req, res) => {
             const query = {};
             const cursor = foodCollection.find(query);
@@ -52,6 +54,7 @@ async function run() {
             res.send(result);
         })
 
+        //get specific service
         app.get('/foods/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: ObjectId(id) };
@@ -60,6 +63,7 @@ async function run() {
             res.send(result);
         })
 
+        // get three services only 
         app.get('/food', async (req, res) => {
             const query = {};
             const cursor = foodCollection.find(query).sort({ date: -1 });
@@ -67,6 +71,7 @@ async function run() {
             res.send(food);
         })
 
+        //get my reviews
         app.get('/reviews', verifyJWT, async (req, res) => {
 
             const decoded = req.decoded;
@@ -87,6 +92,7 @@ async function run() {
             res.send(result);
         })
 
+        // get specific service review
         app.get('/reviews/:id', async (req, res) => {
             const id = req.params.id;
             const query = { serviceId: id };
@@ -95,6 +101,7 @@ async function run() {
             res.send(reviews);
         })
 
+        //get specific review to update
         app.get('/update/:id', async (req, res) => {
             const id = req.params.id;
             const query = {
@@ -104,18 +111,21 @@ async function run() {
             res.send(result);
         })
 
+        //post review
         app.post('/reviews/:id', async (req, res) => {
             const review = req.body;
             const result = await reviewsCollection.insertOne(review);
             res.send(result);
         })
 
-        app.post('/foods', async (req, res) => {
+        //add service
+        app.post('/foods', verifyJWT, async (req, res) => {
             const newService = req.body;
             const result = await foodCollection.insertOne(newService);
             res.send(result);
         })
 
+        //update review
         app.put('/update/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const editedReview = req.body.review;
@@ -131,6 +141,7 @@ async function run() {
             res.send(result);
         })
 
+        // Delete Review
         app.delete('/reviews/:id', verifyJWT, async (req, res) => {
             const id = req.params.id;
             const query = {
